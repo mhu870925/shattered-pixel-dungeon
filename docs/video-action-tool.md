@@ -36,6 +36,8 @@ python tools/build_video_action_builder_exe.py
 
 The build drops `video_action_builder.exe` into `build/exe/`. PyInstaller needs to run on Windows to emit a native `.exe`; the helper script simply standardizes the build options.
 
+> **Where is the `.exe` created?** The helper always writes the executable to `build/exe/video_action_builder.exe` relative to the repo root and prints the path after a successful build.
+
 ## Tips for Shattered Pixel Dungeon assets
 - Keep `--frame-size` small (16–24px) to match the pixel density of the game's sprite sheets.
 - Lower `--fps` or `--max-frames` if the action feels too long compared to in-game timings.
