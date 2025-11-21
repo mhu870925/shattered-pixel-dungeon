@@ -9,6 +9,7 @@ Assets/
 │   ├── Systems/
 │   ├── Gameplay/
 │   └── Shared/
+│       └── Ported/Utils/  # com.watabou.utils.*의 C# 포팅본
 ├── Art/
 ├── Audio/
 ├── Resources/
