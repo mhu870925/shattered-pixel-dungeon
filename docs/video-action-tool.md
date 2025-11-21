@@ -36,3 +36,38 @@ The build drops `video_action_builder.exe` into `build/exe/`. PyInstaller needs 
 - Keep `--frame-size` small (16–24px) to match the pixel density of the game's sprite sheets.
 - Lower `--fps` or `--max-frames` if the action feels too long compared to in-game timings.
 - The generated `action.json` can be used as-is or adapted to whichever resource pipeline you use for custom actions.
+
+## How to download and run
+You can either run the Python script directly or build a Windows-friendly executable.
+
+### 1) Get the sources
+- Clone the repo: `git clone https://github.com/YourOrg/shattered-pixel-dungeon.git`
+- Or download a ZIP of the repo from GitHub, then extract it.
+
+### 2) Run with Python (any OS)
+1. Install Python 3.8+ and make sure `ffmpeg`/`ffprobe` are on your PATH.
+2. From the repo root, run the tool (example values shown):
+   ```bash
+   python tools/video_action_builder.py path/to/clip.mp4 \
+     --action-name fireball_dash \
+     --output build/video-actions \
+     --fps 12 \
+     --frame-size 16 \
+     --max-frames 48 \
+     --sheet-columns 8
+   ```
+3. Find the generated frames, sprite sheet, and `action.json` under `build/video-actions/<action-name>/`.
+
+### 3) Build and run the Windows `.exe`
+1. On Windows, install Python and `ffmpeg`, then install PyInstaller: `pip install pyinstaller`.
+2. From the repo root, run `python tools/build_video_action_builder_exe.py`. The executable is written to `build/exe/video_action_builder.exe`.
+3. Invoke the executable the same way you would the Python script. Example from PowerShell:
+   ```powershell
+   .\build\exe\video_action_builder.exe .\path\to\clip.mp4 \
+     --action-name fireball_dash \
+     --output .\build\video-actions \
+     --fps 12 \
+     --frame-size 16 \
+     --max-frames 48 \
+     --sheet-columns 8
+   ```
