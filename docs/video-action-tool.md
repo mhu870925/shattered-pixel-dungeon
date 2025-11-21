@@ -4,6 +4,8 @@ The `tools/video_action_builder.py` script turns a short MP4 (ideally ~8 seconds
 
 The defaults assume a typical 1280×720 source clip and downscale each sampled frame into a small square (16×16 by default) while preserving the original aspect ratio and padding to fit the target size.
 
+Prefer a GUI? Run `python tools/video_action_builder_ui.py` to open a simple desktop window where you can browse for the MP4, tweak the parameters, and launch the conversion without the command line. The UI surfaces the same defaults as the CLI and displays the output locations when the build finishes.
+
 ## Prerequisites
 - Python 3.8+
 - `ffmpeg` and `ffprobe` available on your PATH

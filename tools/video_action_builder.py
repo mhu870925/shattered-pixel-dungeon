@@ -17,7 +17,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 
 
 class CommandError(RuntimeError):
@@ -141,34 +141,71 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def main(argv: Iterable[str]) -> int:
-    args = parse_args(argv)
+def build_action(
+    video_path: Path,
+    *,
+    action_name: str = "custom_action",
+    output: Path = Path("build") / "video-actions",
+    fps: int = 12,
+    frame_size: int = 16,
+    max_frames: int = 48,
+    sheet_columns: int = 8,
+) -> dict[str, Optional[Path]]:
+    """Run the video-to-action pipeline and return paths to the generated assets."""
+
     _require_binaries()
 
-    if not args.video.exists():
-        raise SystemExit(f"Input video not found: {args.video}")
+    if not video_path.exists():
+        raise CommandError(f"Input video not found: {video_path}")
 
-    duration = _probe_duration(args.video)
-    frame_budget = min(args.max_frames, math.ceil(duration * args.fps))
+    duration = _probe_duration(video_path)
+    frame_budget = min(max_frames, math.ceil(duration * fps))
 
-    output_dir = args.output / args.action_name
+    output_dir = output / action_name
     frames_dir = output_dir / "frames"
     sheet_path = output_dir / "sheet.png"
+    manifest_path = output_dir / "action.json"
 
+    frame_paths = _extract_frames(video_path, frames_dir, fps, frame_size, frame_budget)
+    if not frame_paths:
+        raise CommandError("No frames produced from the input video")
+
+    columns = max(1, sheet_columns)
+    _build_sheet(frame_paths, columns, sheet_path)
+    _write_manifest(output_dir, action_name, frame_size, fps, len(frame_paths), columns)
+
+    return {
+        "output_dir": output_dir,
+        "frames_dir": frames_dir,
+        "sheet_path": sheet_path,
+        "manifest_path": manifest_path,
+        "frame_count": len(frame_paths),
+        "sheet_columns": columns,
+    }
+
+
+def main(argv: Iterable[str]) -> int:
+    args = parse_args(argv)
     try:
-        frame_paths = _extract_frames(args.video, frames_dir, args.fps, args.frame_size, frame_budget)
-        if not frame_paths:
-            raise SystemExit("No frames produced from the input video")
-
-        columns = max(1, args.sheet_columns)
-        _build_sheet(frame_paths, columns, sheet_path)
-        _write_manifest(output_dir, args.action_name, args.frame_size, args.fps, len(frame_paths), columns)
+        result = build_action(
+            args.video,
+            action_name=args.action_name,
+            output=args.output,
+            fps=args.fps,
+            frame_size=args.frame_size,
+            max_frames=args.max_frames,
+            sheet_columns=args.sheet_columns,
+        )
     except CommandError as exc:
         raise SystemExit(str(exc)) from exc
 
+    sheet_path = result["sheet_path"]
+    frames_dir = result["frames_dir"]
+    manifest_path = result["manifest_path"]
+
     print(f"Created sprite sheet: {sheet_path}")
     print(f"Frames saved to: {frames_dir}")
-    print(f"Manifest written to: {output_dir / 'action.json'}")
+    print(f"Manifest written to: {manifest_path}")
     print("Tip: copy the sheet and manifest into your assets directory and reference the frame metadata for animations.")
     return 0
 
