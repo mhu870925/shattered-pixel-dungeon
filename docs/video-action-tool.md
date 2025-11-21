@@ -2,6 +2,8 @@
 
 The `tools/video_action_builder.py` script turns a short MP4 (ideally ~8 seconds) into a Shattered Pixel Dungeon-friendly sprite sheet and manifest. It wraps `ffmpeg` and `ffprobe` to keep the workflow consistent.
 
+The defaults assume a typical 1280×720 source clip and downscale each sampled frame into a small square (16×16 by default) while preserving the original aspect ratio and padding to fit the target size.
+
 ## Prerequisites
 - Python 3.8+
 - `ffmpeg` and `ffprobe` available on your PATH
@@ -16,6 +18,8 @@ python tools/video_action_builder.py path/to/clip.mp4 \
   --max-frames 48 \
   --sheet-columns 8
 ```
+
+For a 1280×720 clip, the command above will automatically shrink and center the frames into the 16×16 tiles while keeping the 12 fps cadence (up to 48 frames total).
 
 Outputs are placed under `build/video-actions/<action-name>/`:
 - `frames/` contains the scaled frame PNGs.
