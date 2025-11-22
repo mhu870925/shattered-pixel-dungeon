@@ -19,9 +19,10 @@ The game also has a translation project hosted on [Transifex](https://explore.tr
 
 Note that **this repository does not accept pull requests!** The code here is provided in hopes that others may find it useful for their own projects, not to allow community contribution. Issue reports of all kinds (bug reports, feature requests, etc.) are welcome.
 
-If you'd like to work with the code, you can find the following guides in `/docs`:
+If you'd like to work with the code, you can find the following guides here:
 - [Compiling for Android.](docs/getting-started-android.md)
     - **[If you plan to distribute on Google Play please read the end of this guide.](docs/getting-started-android.md#distributing-your-apk)**
 - [Compiling for desktop platforms.](docs/getting-started-desktop.md)
 - [Compiling for iOS.](docs/getting-started-ios.md)
 - [Recommended changes for making your own version.](docs/recommended-changes.md)
+- [Unity 포팅 및 코드 구조 가이드 (KR).](unity/docs/overview-ko.md)
